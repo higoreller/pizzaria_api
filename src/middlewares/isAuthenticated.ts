@@ -3,7 +3,6 @@ import {verify} from 'jsonwebtoken'
 
 interface Payload{
     sub: string
-
 }
 
 export function isAuthenticated(
@@ -21,10 +20,14 @@ export function isAuthenticated(
     const [, token] = authToken.split(" ")
 
     try{
+        //Validate JWT
         const {sub} = verify(
             token,
             process.env.JWT_SECRET
         ) as Payload
+        
+        //Recover the token ID and then inject in the request
+        req.user_id = sub
 
         return next()
     }catch(err){
